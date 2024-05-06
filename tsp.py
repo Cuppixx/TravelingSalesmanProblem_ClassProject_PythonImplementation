@@ -1,5 +1,6 @@
 from itertools import permutations
 from random import shuffle
+import math
 import random
 import time
 
@@ -114,9 +115,11 @@ def two_opt_step(tour, distances):
     
     return tour, shortest_length, evaluated_lengths
 
-def hill_climber(distances):
-    random_tour = list(range(len(distances)))
+def hill_climber(distances, maximalNoOfCities):
+    random_tour = list(range(maximalNoOfCities))
+    #random_tour = list(range(len(distances)))
     random.shuffle(random_tour)
+    #random_tour = random_tour[0:maximalNoOfCities]
     print("Random Tour: {}".format(random_tour))
     start_time = time.perf_counter()
     
@@ -145,13 +148,68 @@ def compute_with_2opt(maximalNoOfCities):
     (cities, distances) = loadDistances()
     
     # Perform 2-opt hill climber for the given number of cities
-    tour_length, evaluated_lengths, computation_time = hill_climber(distances)
+    tour_length, evaluated_lengths, computation_time = hill_climber(distances, maximalNoOfCities)
     
     print(f"For {maximalNoOfCities} cities:")
     print(f"Shortest tour length found by 2-opt hill climber: {tour_length}")
     print(f"Number of evaluated tour lengths: {evaluated_lengths}")
-    print(f"Computation time: {computation_time} seconds")
-    
+    print(f"Computation time: {computation_time} seconds\n\n")
+
+def node_insertion(tour):
+     #print(tour)
+     random_node = random.randint(0,len(tour)-1)
+     #print(random_node)
+     random_indx = random_node
+     while random_indx == random_node:
+        random_indx = random.randint(0,len(tour)-1)
+        #print(random_indx)
+     tour.pop(random_node)
+     tour.insert(random_indx,random_node)
+     return tour
+
+def node_exchange(tour):
+     random_node1 = random.randint(0,len(tour)-1)
+     #print(random_node)
+     random_node2 = random_node1
+     while random_node2 == random_node1:
+        random_node2 = random.randint(0,len(tour)-1)
+     temp=tour[random_node1]
+     tour[random_node1]=tour[random_node2]
+     tour[random_node2]=temp
+     return tour
+
+def simulated_annealing(distances, maximalNoOfCities, initial_temperature=1000, cooling_rate=0.999, stopping_temperature=0.01):
+    random_tour = list(range(maximalNoOfCities))
+    random.shuffle(random_tour)
+    print("Random Tour: {}".format(random_tour))
+    current_tour = random_tour
+    current_length = measurePath(current_tour, distances)
+    temperature = initial_temperature
+    evaluated_lengths = 0
+    start_time = time.perf_counter()
+
+    while temperature > stopping_temperature:
+        new_tour, new_length, evals = two_opt_step(current_tour, distances)
+        evaluated_lengths += evals
+        delta_length = new_length - current_length
+        if delta_length < 0 or random.random() < math.exp(-delta_length / temperature):
+            current_tour = new_tour
+            current_length = new_length
+        temperature *= cooling_rate
+
+    end_time = time.perf_counter()
+    computation_time = end_time - start_time
+
+    return current_length, evaluated_lengths, computation_time
+
+
+def compute_with_simulated_annealing(maximalNoOfCities, initial_temperature=1000, cooling_rate=0.999, stopping_temperature=0.01):
+    cities, distances = loadDistances()
+    tour_length, evaluated_lengths, computation_time = simulated_annealing(distances, maximalNoOfCities, initial_temperature, cooling_rate, stopping_temperature)
+    print(f"For {maximalNoOfCities} cities:")
+    print(f"Shortest tour length found by Simulated Annealing: {tour_length}")
+    print(f"Number of evaluated tour lengths: {evaluated_lengths}")
+    print(f"Computation time: {computation_time} seconds\n\n")  
 
 #MAIN/////////////////////////////////////////////////////////////////////////
 maximalNoOfCities=int(input("Enter the maximal number of cities: "))
@@ -163,13 +221,12 @@ maximalNoOfCities=int(input("Enter the maximal number of cities: "))
 #print(cities[:maximalNoOfCities])
 
 # print distance matrix
-#print(distances)
-
+#print(distances)    
 
 #random_walk(maximalNoOfCities)
-brute_force(maximalNoOfCities)
-for n in range(1):
-    compute_with_2opt(maximalNoOfCities)
-
+#brute_force(maximalNoOfCities)
+for n in range(5):
+#    compute_with_2opt(maximalNoOfCities)
+    compute_with_simulated_annealing(maximalNoOfCities)
 
 
