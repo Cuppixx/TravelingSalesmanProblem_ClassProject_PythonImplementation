@@ -14,3 +14,29 @@ n	Len	    Rechenzeit [sec]     |  Len     Len     Len     Len     Len     Rundre
 14  	                         |  3003    2754    3006    2992    2952    373.8       0.001017519994      |   2639    2639    2639    2639    2639    0.064890959998      11508
 15                               |  2999    2985    3230    3050    2945    493.4       0.001291939988      |   2806    2806    2806    2806    2806    0.064239860000      11508
 16                               |  3099    3403    3201    3373    2940    776.8       0.002071800013      |   2794    2794    2794    2794    2794    0.067777460021      11508
+
+--Fragen--:
+Könnte Dein “Brute Force” Programm in diesem Jahr die kürzeste Rundreise durch alle Landeshauptstädte berechnen?
+A: Für n = 16 würde das Programm zwischen 5 und 7 Tagen laufen. Die Angabe ist jedoch sehr grob.
+
+Für bekannte kürzeste Rundreisen: Findet 2-opt auch immer die kürzeste Rundreise?
+A: 2-opt findet nicht immer die Optimale Tour (siehe n = 12, n = 10). Durchschnittlich findet 2-opt für 1.333 von 5 Läufen die Optimale Lösung.
+
+Wenn nicht, wie nahe kommt 2-opt an eine beste Lösung?
+A: Im durchschnitt kommt 2-opt bei einer von 5 läufen an die Optimal Lösung heran. Jedoch kann sich 2-opt auch um bis zu 500+ Len verschätzen.
+Die Fehler scheinen mit zunehmendem n häufiger zu werden. Eventuell da ein größeres n mehr lokale optima mitbringt in denen 2-opt festhängen kann?
+
+Für bekannte kürzeste Rundreisen: Findet SA auch immer die kürzeste Rundreise?
+A: Ja! Jedoch stark abhängig vom Abkühlschema
+
+Wenn nicht, wie nahe kommt SA an eine beste Lösung?
+A: ---
+
+Nimmt die Rechenzeit von SA mit größer werdenden n zu?
+A: Die Rechenzeit nimmt durchschnittlich um 0.00119 sekunden mit jedem n zu.
+
+Ist Deine SA Implementierung schneller als 2-opt?
+A: Für das Implmentierte Abkühlschema nein. Für ungenauere Abkühlschema ja. Zudem steigt die Rechenzeit langsammer als für 2-opt.
+
+Erzeugt Dein SA bessere Lösungen als 2-opt?
+A: Ja! Jedoch stark abhängig vom Abkühlschema
