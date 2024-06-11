@@ -46,6 +46,7 @@ def random_walk(maximalNoOfCities, iterations = 1000000):
 			print('iteration: {}'.format(j))	
 
 def brute_force(maximalNoOfCities):
+    
     time_start = time.perf_counter()
     num_cities = maximalNoOfCities
     shortest_tour_length = float('inf')
@@ -78,7 +79,7 @@ def two_opt_step(tour, distances):
         improvement = False
         for i in range(num_cities - 2):
             for k in range(i + 2, num_cities):
-                new_tour = two_opt_xchg(tour, i, k)
+                new_tour = two_opt_xchg(tour.copy(), i, k)
                 new_length = measurePath(new_tour, distances)
                 evaluated_lengths += 1
                 if new_length < shortest_length:
@@ -97,13 +98,13 @@ def hill_climber(distances, maximalNoOfCities):
     random.shuffle(random_tour)
     print("Random Tour: {}".format(random_tour))
     
-    current_tour = random_tour
+    current_tour = random_tour.copy()
     current_length = measurePath(current_tour, distances)
     evaluated_lengths = 0
     
     while True:
         improved = False
-        new_tour, new_length, evaluations = two_opt_step(current_tour, distances)
+        new_tour, new_length, evaluations = two_opt_step(current_tour.copy(), distances)
         evaluated_lengths += evaluations
         if new_length < current_length:
             current_tour = new_tour
@@ -135,6 +136,7 @@ def compute_with_2opt(maximalNoOfCities):
     print(f"Average computation time: {average_computation_time} seconds")
 
 def node_exchange(tour):
+     tour = list(tour)
      random_node1 = random.randint(0,len(tour)-1)
      random_node2 = random_node1
      while random_node2 == random_node1: random_node2 = random.randint(0,len(tour)-1)
@@ -144,6 +146,7 @@ def node_exchange(tour):
      return tour
 
 def node_insertion(tour):
+     tour = list(tour)
      random_node1 = random.randint(0,len(tour)-1)
      random_node2 = random_node1
      while random_node2 == random_node1: random_node2 = random.randint(0,len(tour)-1)
@@ -156,7 +159,7 @@ def simulated_annealing(distances, maximalNoOfCities, initial_temperature=1000, 
     random_tour = list(range(maximalNoOfCities))
     random.shuffle(random_tour)
     print("Random Tour: {}".format(random_tour))
-    current_tour = random_tour
+    current_tour = list(random_tour)
     current_length = measurePath(current_tour, distances)
     temperature = initial_temperature
     evaluated_lengths = 0
@@ -189,7 +192,7 @@ def simulated_annealing(distances, maximalNoOfCities, initial_temperature=1000, 
         evaluated_lengths += 1
         delta_length = new_length - current_length
         if delta_length < 0 or random.random() < math.exp(-delta_length / temperature):
-            current_tour = new_tour
+            current_tour = list(new_tour)
             current_length = new_length
         temperature *= cooling_rate
 
