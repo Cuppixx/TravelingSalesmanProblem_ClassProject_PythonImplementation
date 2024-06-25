@@ -4,7 +4,7 @@ import random
 import time
 
 def loadDistances():
-	distancesFile = open("citiesAndDistances.txt")
+	distancesFile = open("tspfiles/citiesAndDistances.txt")
 	cities = distancesFile.readline().split()
 	del cities[16:]
 	numCities = len(cities)
