@@ -168,7 +168,7 @@ def EA_tour(tsp, population_size, max_generations):
 
 def calc_EA_tour(tsp):
     print("--> Calc EA Tour now!")
-    return EA_tour(tsp, 30, 7500) # Change population size (def: 30) and max generation (def: 5000; max: 100.000)
+    return EA_tour(tsp, 30, 3500) # Change population size (def: 30) and max generation (def: 3500; max: 100.000)
 
 def calc_EA_tour_txt(tsp):
     file = open("bestresults.txt", "w")
