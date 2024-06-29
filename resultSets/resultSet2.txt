@@ -3,7 +3,50 @@ Welche der drei EA Konfigurationen hat die kürzesten Rundreisen finden können?
 
 Assumption for: population_size = 20; max_generation = 5000; min_k = population_size / 4; mutation_prob = 50%
 The average and min length accordingly for:
-    ox  and swap_mutation           is: 18035.4 and 16541   
-    ox  and inversion_mutation      is: 19047.8 and 17279
-    pmx and swap_mutation           is: 16070.2 and 14211
-    pmx and inversion_mutation      is: 17708.4 and 15196
+    ox  and swap_mutation           are: 17870.0 and 15476
+    ox  and inversion_mutation      are: 18750.2 and 14944 (second-best tour: 17086)
+    pmx and swap_mutation           are: 15468.7 and 13197
+    pmx and inversion_mutation      are: 17279.9 and 13353 
+
+Die kürzeste Rundreise hat die EA Konfiguration aus pmx und swap_mutation gefunden.
+Die selbe Konfiguration ist zudem auch im durchschnitt die beste Wahl.
+
+Interessant: Obwohl die Konfiguration aus ox und inversion_mutation die schlechtesten Touren im durchschnitt findet
+             hat die Konfiguration dennoch eine äußerst gute Lösung gefunden. Nach mehrmaligem testen scheint das jedoch nur zufall gewesen zu sein.
+             Ähnliches gilt für die Konfiguration pmx and inversion_mutation, die zweit-beste Konfiguration im durchschnitt.
+
+
+Aus den Erkentnissen wird die Konfiguration pmx and swap_mutation als basis gewählt, 
+da diese die im durchschnitt besten Lösungen liefert und (auch wenn nur knapp) die beste Lösung aller Kombinationen gefunden hat.
+Auf der EA Konfiguration werden nun mutation_prob; min_k; population_size; max_generation schrittweise angepasst um besser Ergbnisse zu erziehlen.
+Die Einstellung für gute (nicht zwangsweise für beste) durchschnitts-werte wird für den nächsten schritt beibehalten.
+Bsp. Schritt 2. min_k arbeitet mit der mutation_prob von 25% weiter.
+
+1. mutation_prob durchschnitt mit:
+     0% --> 25906.7
+    20% --> 11158.5
+    25% --> 11673.0    <-- Selected
+    50% --> 15468.7
+    75% --> 20670.8
+
+2. min_k durchschnitt mit:
+    population_size / 6 --> 22113.3
+    population_size / 4 --> 11673.0
+    population_size / 2 -->  8559.4    <-- Selected
+    population_size / 1 -->  8288.3
+
+3. population_size durchschnitt mit:
+    20 --> 8559.4
+    30 --> 8405.9  <-- Selected
+    40 --> 8257.7
+
+4. max_generation durchschnitt mit:
+      5.000 --> 8405.9
+      7.500 --> ??? <-- Selected as it is has bearable runtime
+
+     10.000 --> takes too long for me to even care
+     20.000 --> takes too long for me to even care
+     40.000 --> takes too long for me to even care
+    100.000 --> takes too long for me to even care
+
+!!! best solution found - all time: 7542 !!!

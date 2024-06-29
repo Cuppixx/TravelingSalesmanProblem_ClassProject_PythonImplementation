@@ -123,7 +123,7 @@ def create_child(selected_population, recombination_op, mutation_op):
         case 0: child = order_crossover(parent1, parent2)
         case 1: child = partially_mapped_crossover(parent1, parent2)
 
-    if random.randint(0, 100) < 50: # Change the probability that a mutation is applied to the child (def: 50)
+    if random.randint(0, 100) < 25: # Change the probability that a mutation is applied to the child (def: 25)
         match mutation_op:
             case 0: child = swap_mutation(child)
             case 1: child = inversion_mutation(child)
@@ -133,7 +133,7 @@ def create_child(selected_population, recombination_op, mutation_op):
 def create_offspring(selected_population, population_size):
     new_population = []
     while len(new_population) < population_size:
-        new_population.append(create_child(selected_population, 0, 0)) # Change the recombination and mutation operators used (def: 1 and 1)
+        new_population.append(create_child(selected_population, 1, 1)) # Change the recombination and mutation operators used (def: 1 and 1)
     
     return new_population
 
@@ -156,7 +156,7 @@ def EA_tour(tsp, population_size, max_generations):
     population = initialize_population(tsp, population_size)
 
     for generation in range(max_generations):
-        min_k = population_size / 4 # Change the minimum value of k aka the min amount of individuals viewed by the tournament selection
+        min_k = population_size / 2 # Change the minimum value of k aka the min amount of individuals viewed by the tournament selection (def: 2)
         k = max(int((1 - generation / max_generations) * population_size), int(min_k))
 
         selected_population = select_individuals(tsp, population, k)
@@ -168,7 +168,7 @@ def EA_tour(tsp, population_size, max_generations):
 
 def calc_EA_tour(tsp):
     print("--> Calc EA Tour now!")
-    return EA_tour(tsp, 20, 5000) # Change population size (def: 20) and max generation (def: 5000; max: 100.000)
+    return EA_tour(tsp, 30, 7500) # Change population size (def: 30) and max generation (def: 5000; max: 100.000)
 
 def calc_EA_tour_txt(tsp):
     file = open("bestresults.txt", "w")
