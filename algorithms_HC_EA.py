@@ -80,29 +80,31 @@ def order_crossover(parent1, parent2):
 
 def partially_mapped_crossover(parent1, parent2):
     size = len(parent1)
-    p1, p2 = [0]*size, [0]*size
+    offspring1 = [-1] * size
     
-    for i in range(size):
-        p1[parent1[i]] = i
-        p2[parent2[i]] = i
+    start, end = sorted(random.sample(range(size), 2))
     
-    cxpoint1, cxpoint2 = sorted(random.sample(range(size), 2))
-    child = [None]*size
-
-    replacement_map = {}
-
-    for i in range(cxpoint1, cxpoint2):
-        child[i] = parent1[i]
-        replacement_map[parent2[i]] = parent1[i]
-
-    for i in range(size):
-        if child[i] is None:
-            temp = parent2[i]
-            while temp in replacement_map:
-                temp = replacement_map[temp]
-            child[i] = temp
-
-    return child
+    offspring1[start:end+1] = parent1[start:end+1]
+    
+    def map_segment(offspring, parent, other_parent):
+        for i in range(start, end + 1):
+            if other_parent[i] not in offspring:
+                current_value = other_parent[i]
+                position = i
+                while offspring[position] != -1:
+                    position = other_parent.index(parent[position])
+                offspring[position] = current_value
+    
+    map_segment(offspring1, parent1, parent2)
+    
+    def fill_rest(offspring, parent):
+        for i in range(size):
+            if offspring[i] == -1:
+                offspring[i] = parent[i]
+    
+    fill_rest(offspring1, parent2)
+    
+    return offspring1
 
 def swap_mutation(route):
     idx1, idx2 = random.sample(range(len(route)), 2)
@@ -131,7 +133,7 @@ def create_child(selected_population, recombination_op, mutation_op):
 def create_offspring(selected_population, population_size):
     new_population = []
     while len(new_population) < population_size:
-        new_population.append(create_child(selected_population, 0, 1)) # Change the recombination and mutation operators used (def: 1 and 1)
+        new_population.append(create_child(selected_population, 0, 0)) # Change the recombination and mutation operators used (def: 1 and 1)
     
     return new_population
 
@@ -154,7 +156,10 @@ def EA_tour(tsp, population_size, max_generations):
     population = initialize_population(tsp, population_size)
 
     for generation in range(max_generations):
-        selected_population = select_individuals(tsp, population, 4) # Change the amount of indivduals selected for new population with tournament selection (def: 10)
+        min_k = population_size / 4 # Change the minimum value of k aka the min amount of individuals viewed by the tournament selection
+        k = max(int((1 - generation / max_generations) * population_size), int(min_k))
+
+        selected_population = select_individuals(tsp, population, k)
         population = create_offspring(selected_population, population_size)
 
     time_consumed = time.time()-start_time

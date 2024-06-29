@@ -1,3 +1,9 @@
 --Fragen--:
 Welche der drei EA Konfigurationen hat die kürzesten Rundreisen finden können?
-A: 
+
+Assumption for: population_size = 20; max_generation = 5000; min_k = population_size / 4; mutation_prob = 50%
+The average and min length accordingly for:
+    ox  and swap_mutation           is: 18035.4 and 16541   
+    ox  and inversion_mutation      is: 19047.8 and 17279
+    pmx and swap_mutation           is: 16070.2 and 14211
+    pmx and inversion_mutation      is: 17708.4 and 15196
