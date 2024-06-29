@@ -15,7 +15,6 @@ def node_xchg_step(tour):
     tour[i], tour[k] = tour[k], tour[i]
     return tour
 
-# implementation of a hill climber
 def HC_tour(tsp, max_iterations):
     start_time = time.time()
     tour = [i for i in range(tsp["DIMENSION"])]
@@ -48,23 +47,123 @@ def HC_tour(tsp, max_iterations):
 def calc_HC_tour(tsp):
     return HC_tour(tsp, 100000)
 
-# implementation of an Evolutionary Algorithm
+
+
+
+# EA implementation for p2
+def initialize_population(tsp, population_size):
+    population = []
+    for _ in range(population_size):
+        tour = [i for i in range(tsp["DIMENSION"])]
+        random.shuffle(tour)
+        population.append(tour)
+    return population
+
+def select_individuals(tsp, population, k):
+    tournament = random.choices(population, k=k)
+    tournament.sort(key=lambda tour: calc_tour_length(tsp, tour))  
+    return tournament[0], tournament[1]
+
+def order_crossover(parent1, parent2):
+    size = len(parent1)
+    start, end = sorted(random.sample(range(size), 2))
+    child = [None]*size
+    child[start:end] = parent1[start:end]
+    p2_index = end
+    c_index = end
+    while None in child:
+        if parent2[p2_index] not in child:
+            child[c_index] = parent2[p2_index]
+            c_index = (c_index + 1) % size
+        p2_index = (p2_index + 1) % size
+    return child
+
+def partially_mapped_crossover(parent1, parent2):
+    size = len(parent1)
+    p1, p2 = [0]*size, [0]*size
+    
+    for i in range(size):
+        p1[parent1[i]] = i
+        p2[parent2[i]] = i
+    
+    cxpoint1, cxpoint2 = sorted(random.sample(range(size), 2))
+    child = [None]*size
+
+    replacement_map = {}
+
+    for i in range(cxpoint1, cxpoint2):
+        child[i] = parent1[i]
+        replacement_map[parent2[i]] = parent1[i]
+
+    for i in range(size):
+        if child[i] is None:
+            temp = parent2[i]
+            while temp in replacement_map:
+                temp = replacement_map[temp]
+            child[i] = temp
+
+    return child
+
+def swap_mutation(route):
+    idx1, idx2 = random.sample(range(len(route)), 2)
+    route[idx1], route[idx2] = route[idx2], route[idx1]
+    return route
+
+def inversion_mutation(route):
+    idx1, idx2 = sorted(random.sample(range(len(route)), 2))
+    route[idx1:idx2] = reversed(route[idx1:idx2])
+    return route
+
+def create_child(selected_population, recombination_op, mutation_op):
+    parent1, parent2 = random.sample(selected_population, 2)
+    
+    match recombination_op:
+        case 0: child = order_crossover(parent1, parent2)
+        case 1: child = partially_mapped_crossover(parent1, parent2)
+
+    if random.randint(0, 100) < 50: # Change the probability that a mutation is applied to the child (def: 50)
+        match mutation_op:
+            case 0: child = swap_mutation(child)
+            case 1: child = inversion_mutation(child)
+ 
+    return child
+
+def create_offspring(selected_population, population_size):
+    new_population = []
+    while len(new_population) < population_size:
+        new_population.append(create_child(selected_population, 0, 1)) # Change the recombination and mutation operators used (def: 1 and 1)
+    
+    return new_population
+
+def evaluate_fitness(tsp, population):
+    fitness_values = []
+    for tour in population:
+        fitness = calc_tour_length(tsp, tour)
+        fitness_values.append(fitness)
+    return fitness_values
+
+def get_best_tour(population, tsp):
+    fitness_values = evaluate_fitness(tsp, population)
+    best_index = fitness_values.index(min(fitness_values))
+    best_tour = population[best_index]
+    return best_tour
+
 def EA_tour(tsp, population_size, max_generations):
     start_time = time.time()
-    tour = [i for i in range(tsp["DIMENSION"])]
-    random.shuffle(tour)
-    tour_len = calc_tour_length(tsp, tour)
 
+    population = initialize_population(tsp, population_size)
 
-
+    for generation in range(max_generations):
+        selected_population = select_individuals(tsp, population, 4) # Change the amount of indivduals selected for new population with tournament selection (def: 10)
+        population = create_offspring(selected_population, population_size)
 
     time_consumed = time.time()-start_time
     print('time consumed', time_consumed)
-    return (tour_len)
-
+    return calc_tour_length(tsp, get_best_tour(population, tsp))
 
 def calc_EA_tour(tsp):
-    return EA_tour(tsp, 20, 5000)
+    print("--> Calc EA Tour now!")
+    return EA_tour(tsp, 20, 5000) # Change population size (def: 20) and max generation (def: 5000; max: 100.000)
 
 def calc_EA_tour_txt(tsp):
     file = open("bestresults.txt", "w")
@@ -72,7 +171,7 @@ def calc_EA_tour_txt(tsp):
     tour_len_sum = 0
     for i in range(runs):
         best_tour_len = calc_EA_tour(tsp)
-        print("EA LENGTH RUN",i+1,":        {}".format(best_tour_len))
+        print("EA LENGTH RUN",i+1,":        {}".format(best_tour_len),"\n")
         file.write(str(best_tour_len))
         file.write("\n")
         tour_len_sum += best_tour_len

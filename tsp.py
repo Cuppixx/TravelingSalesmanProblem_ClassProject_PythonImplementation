@@ -220,54 +220,6 @@ def compute_with_simulated_annealing(maximalNoOfCities):
     print(f"Average evaluated tour lengths: {average_evaluated_lengths}")
     print(f"Average computation time: {average_computation_time} seconds")
 
-def swap_mutation(route):
-    idx1, idx2 = random.sample(range(len(route)), 2)
-    route[idx1], route[idx2] = route[idx2], route[idx1]
-    return route
-
-def order_crossover(parent1, parent2):
-    size = len(parent1)
-    start, end = sorted(random.sample(range(size), 2))
-    child = [None]*size
-    child[start:end] = parent1[start:end]
-    p2_index = end
-    c_index = end
-    while None in child:
-        if parent2[p2_index] not in child:
-            child[c_index] = parent2[p2_index]
-            c_index = (c_index + 1) % size
-        p2_index = (p2_index + 1) % size
-    return child
-
-def inversion_mutation(route):
-    idx1, idx2 = sorted(random.sample(range(len(route)), 2))
-    route[idx1:idx2] = reversed(route[idx1:idx2])
-    return route
-
-def partially_mapped_crossover(parent1, parent2):
-    size = len(parent1)
-    p1, p2 = [0]*size, [0]*size
-    
-    for i in range(size):
-        p1[parent1[i]] = i
-        p2[parent2[i]] = i
-    
-    cxpoint1, cxpoint2 = sorted(random.sample(range(size), 2))
-    child = [None]*size
-    
-    for i in range(cxpoint1, cxpoint2):
-        child[i] = parent1[i]
-        temp = parent2[i]
-        while temp in child:
-            temp = parent1[p2[temp]]
-        parent2[i] = temp
-    
-    for i in range(size):
-        if child[i] is None:
-            child[i] = parent2[i]
-    
-    return child
-
 #MAIN/////////////////////////////////////////////////////////////////////////
 maximalNoOfCities=int(input("Enter the maximal number of cities: "))
 
