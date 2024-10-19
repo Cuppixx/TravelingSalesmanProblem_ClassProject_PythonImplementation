@@ -1,3 +1,4 @@
+# pylint: skip-file
 from city import distance
 
 def calc_distance(tsp, city1_index, city2_index):

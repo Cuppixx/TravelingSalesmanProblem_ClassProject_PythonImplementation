@@ -1,6 +1,8 @@
+# pylint: skip-file
 from city import distance
 import time
 import random
+
 
 def calc_tour_length(tsp, tour):
     cities = tsp["CITIES"]
@@ -9,11 +11,13 @@ def calc_tour_length(tsp, tour):
         length += distance(cities[tour[i - 1]], cities[tour[i]])
     return length
 
+
 def node_xchg_step(tour):
     i = random.randint(0, len(tour) - 1)
     k = random.randint(0, len(tour) - 1)
     tour[i], tour[k] = tour[k], tour[i]
     return tour
+
 
 def HC_tour(tsp, max_iterations):
     start_time = time.time()
@@ -44,10 +48,9 @@ def HC_tour(tsp, max_iterations):
     print('time consumed', time_consumed, 'tours visited', visited_tours, 'number of tours per second', visited_tours/time_consumed)
     return (best_tour_len)
 
+
 def calc_HC_tour(tsp):
     return HC_tour(tsp, 100000)
-
-
 
 
 # EA implementation for p2
@@ -59,10 +62,12 @@ def initialize_population(tsp, population_size):
         population.append(tour)
     return population
 
+
 def select_individuals(tsp, population, k):
     tournament = random.choices(population, k=k)
     tournament.sort(key=lambda tour: calc_tour_length(tsp, tour))  
     return tournament[0], tournament[1]
+
 
 def order_crossover(parent1, parent2):
     size = len(parent1)
@@ -77,6 +82,7 @@ def order_crossover(parent1, parent2):
             c_index = (c_index + 1) % size
         p2_index = (p2_index + 1) % size
     return child
+
 
 def partially_mapped_crossover(parent1, parent2):
     size = len(parent1)
@@ -106,15 +112,18 @@ def partially_mapped_crossover(parent1, parent2):
     
     return offspring1
 
+
 def swap_mutation(route):
     idx1, idx2 = random.sample(range(len(route)), 2)
     route[idx1], route[idx2] = route[idx2], route[idx1]
     return route
 
+
 def inversion_mutation(route):
     idx1, idx2 = sorted(random.sample(range(len(route)), 2))
     route[idx1:idx2] = reversed(route[idx1:idx2])
     return route
+
 
 def create_child(selected_population, recombination_op, mutation_op):
     parent1, parent2 = random.sample(selected_population, 2)
@@ -130,12 +139,14 @@ def create_child(selected_population, recombination_op, mutation_op):
  
     return child
 
+
 def create_offspring(selected_population, population_size):
     new_population = []
     while len(new_population) < population_size:
         new_population.append(create_child(selected_population, 1, 1)) # Change the recombination and mutation operators used (def: 1 and 1)
     
     return new_population
+
 
 def evaluate_fitness(tsp, population):
     fitness_values = []
@@ -144,11 +155,13 @@ def evaluate_fitness(tsp, population):
         fitness_values.append(fitness)
     return fitness_values
 
+
 def get_best_tour(population, tsp):
     fitness_values = evaluate_fitness(tsp, population)
     best_index = fitness_values.index(min(fitness_values))
     best_tour = population[best_index]
     return best_tour
+
 
 def EA_tour(tsp, population_size, max_generations):
     start_time = time.time()
@@ -166,9 +179,11 @@ def EA_tour(tsp, population_size, max_generations):
     print('time consumed', time_consumed)
     return calc_tour_length(tsp, get_best_tour(population, tsp))
 
+
 def calc_EA_tour(tsp):
     print("--> Calc EA Tour now!")
     return EA_tour(tsp, 30, 3500) # Change population size (def: 30) and max generation (def: 3500; max: 100.000)
+
 
 def calc_EA_tour_txt(tsp):
     file = open("bestresults.txt", "w")

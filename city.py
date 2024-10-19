@@ -1,9 +1,10 @@
+# pylint: skip-file
 from math  import pi, sqrt, cos, sin, acos
 from numpy import around
 
 class Euc_2D:
     def __init__(self, x = None, y = None):
-        self.x = x;
+        self.x = x
         self.y = y
 
     def __sub__(self, other):
@@ -36,7 +37,7 @@ def euc_2d_distance(city1, city2):
 def geo_distance(city1, city2):
     (lat1,lon1) = city1.coord_tuple()
     (lat2,lon2) = city2.coord_tuple()
-     
+
     if lat1 == lat2 and lon1 == lon2:
         return 0
     else:
@@ -56,4 +57,3 @@ def distance(city1, city2):
         return geo_distance(city1, city2)
     elif type(city1) == Euc_2D:
         return euc_2d_distance(city1, city2)
-

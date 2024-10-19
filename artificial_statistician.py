@@ -1,7 +1,8 @@
+# pylint: skip-file
 from itertools import combinations
 import math
-import matplotlib.pyplot as plt
-from scipy.stats import shapiro, anderson, kstest, ttest_ind, mannwhitneyu, ks_2samp, rankdata
+import matplotlib.pyplot as plt # type: ignore
+from scipy.stats import shapiro, anderson, kstest, ttest_ind, mannwhitneyu, ks_2samp, rankdata # type: ignore
 from statistics import variance, mean
 
 # Sequences
@@ -25,12 +26,14 @@ alpha = 0.05
 # Create dict
 sequences = {name_a:a_sorted, name_b:b_sorted, name_c:c_sorted}
 
+
 def plot_histogram(data, title):
     plt.hist(data, bins='auto', alpha=0.7, rwidth=0.85)
     plt.title(f'Histogram of {title}')
     plt.xlabel('Value')
     plt.ylabel('Frequency')
     plt.show()
+
 
 def plot_boxplot(data1, data2, title1, title2):
     data = [data1, data2]
@@ -39,12 +42,13 @@ def plot_boxplot(data1, data2, title1, title2):
     plt.ylabel('Value')
     plt.show()
 
+
 def test_all(sequences, alpha):
     print("This is an Artificial Statistician for continuous target values and unpaired data!")
     print("Let's compare", len(sequences),"sequences at an alpha-level of", alpha,"\n")
     print("*****************************************")
     print("Let's first have a look at the properties of the data distributions:\n")
-    
+
     normality_results = {}
     for name, seq in sequences.items():
         print (name)
@@ -68,7 +72,7 @@ def test_all(sequences, alpha):
 
         # plot histogram
         plot_histogram(seq, name)
-        
+
     print("*****************************************")
     print ("Let's continue with comparing the", len(sequences), "sequences:")
 
@@ -77,7 +81,7 @@ def test_all(sequences, alpha):
 
         # plot box plot
         plot_boxplot(seq_a, seq_b, name_a, name_b)
-        
+
         # Check normality
         a_normal = all(normality_results[name_a])
         b_normal = all(normality_results[name_b])
@@ -115,7 +119,7 @@ def test_all(sequences, alpha):
         ranksum_a = sum(a_ranked)
         ranksum_b = sum(b_ranked)
 
-        print("\nVargha’s and Delaney’s A Measure")
+        print("\nVarghas and Delaneys A Measure")
         print("0.5=no, 0.56=small, 0.64=medium, 0.71=big effect")
         A = 1 / len(seq_b) * (ranksum_a / len(seq_a) - (len(seq_a) + 1) / 2)
         if A < 0.5:

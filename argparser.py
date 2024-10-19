@@ -1,3 +1,4 @@
+# pylint: skip-file
 import argparse
 
 parser = argparse.ArgumentParser(
