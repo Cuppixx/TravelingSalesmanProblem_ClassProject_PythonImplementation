@@ -1,4 +1,4 @@
-# TravelingSalesmanProblem_ClassProject_PythonImplementation
+# TravelingSalesmanProblem_ClassProject_Python
 
 ## Overview
 
