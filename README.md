@@ -6,12 +6,16 @@ This project is a collection of various Python files written for the Practical O
 
 The project's focus is on solving the TSP using different algorithms.
 
+Some files, primarily README files and result sets, are in German.
+
 ---
 
 All files are part of one of three mini projects
 
 - Mini Project 1 consists of `tsp.py`, `CitiesAndDistances.txt`, `ResultSet1.md`, and the corresponding README files. The focus of Mini Project 1 was on solving the TSP using brute force, 2-opt, and simulated annealing, as well as comparing the results.
+  
 - Mini Project 3 consists of `artificial_statistician.py` and the corresponding README files. The focus of Mini Project 3 was on evaluating the performance of algorithms.
+  
 - Mini Project 2 consists of all leftover Python files and the corresponding README files. The focus of Mini Project 2 was on the `algorithms_HC_EA.py` file, where we implemented our own EA algorithm by combining various strategies we learned during class.
 
 *Some of the files were provided as is by our professor. We only implemented certain aspects.*
