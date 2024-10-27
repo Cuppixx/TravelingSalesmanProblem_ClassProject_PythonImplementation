@@ -1,12 +1,12 @@
 # TravelingSalesmanProblem_ClassProject_Python
 
+_Some files, primarily README files and result sets, are in German._
+
 ## Overview
 
 This project is a collection of various Python files written for the Practical Optimization class.
 
 The project's focus is on solving the TSP using different algorithms.
-
-Some files, primarily README files and result sets, are in German.
 
 ---
 
