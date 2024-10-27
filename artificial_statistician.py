@@ -45,28 +45,28 @@ def plot_boxplot(data1, data2, title1, title2):
 
 def test_all(sequences, alpha):
     print("This is an Artificial Statistician for continuous target values and unpaired data!")
-    print("Let's compare", len(sequences),"sequences at an alpha-level of", alpha,"\n")
+    print(f"Let's compare {len(sequences)} sequences at an alpha-level of {alpha} \n")
     print("*****************************************")
     print("Let's first have a look at the properties of the data distributions:\n")
 
     normality_results = {}
     for name, seq in sequences.items():
-        print (name)
-        print ("sequence: ", seq)
+        print(name)
+        print(f"sequence: {seq}")
 
         # normality tests
         # Shapiro-Wilk
         a_shapiro = shapiro(seq)
-        print("{:30s} {:30f}".format("Shapiro-Wilk: p-value", a_shapiro[1]))
+        print(f"{'Shapiro-Wilk: p-value':30s} {a_shapiro[1]:30f}")
 
         # Kolmogorov-Smirnov
         a_kolmogorov = kstest(seq, 'norm')
-        print("{:30s} {:30f}".format("Kolmogorov-Smirnov: p-value", a_kolmogorov[1]))
+        print(f"{'Kolmogorov-Smirnov: p-value':30s} {a_kolmogorov[1]:30f}")
 
         # Anderson
         a_anderson = anderson(seq, dist='norm')
-        print("{:30s} {:30f}".format("Anderson: test statistic", a_anderson[0]))
-        print("{:30s} {:30f}".format("Anderson: critical value", a_anderson[1][2]),"\n")
+        print(f"{'Anderson: test statistic':30s} {a_anderson[0]:30f}")
+        print(f"{'Anderson: critical value':30s} {a_anderson[1][2]:30f}\n")
 
         normality_results[name] = (a_shapiro[1] > alpha, a_kolmogorov[1] > alpha, a_anderson[0] < a_anderson[1][2])
 
@@ -74,7 +74,7 @@ def test_all(sequences, alpha):
         plot_histogram(seq, name)
 
     print("*****************************************")
-    print ("Let's continue with comparing the", len(sequences), "sequences:")
+    print(f"Let's continue with comparing the {len(sequences)} sequences:")
 
     for (name_a, seq_a), (name_b, seq_b) in combinations(sequences.items(), 2):
         print(f"\nComparing {name_a} and {name_b}:")
@@ -91,25 +91,25 @@ def test_all(sequences, alpha):
             # Check variances
             var_a = variance(seq_a)
             var_b = variance(seq_b)
+
             if abs(var_a - var_b) / max(var_a, var_b) < 0.1:
                 print("\nT-test assuming norm. distr. & equal sigmas")
                 ttest_ab = ttest_ind(seq_a, seq_b)
-                print("{:30s} {:30f}".format("t-statistic", ttest_ab[0]))
-                print("{:30s} {:30f}".format("p-value", ttest_ab[1]))
+                print(f"{'t-statistic':30s} {ttest_ab[0]:30f}"); print(f"{'p-value':30s} {ttest_ab[1]:30f}")
+
             else:
                 print("\nT-test assuming norm. distr. & unequal sigmas")
                 ttest_ab_unequal = ttest_ind(seq_a, seq_b, equal_var=False)
-                print("{:30s} {:30f}".format("t-statistic", ttest_ab_unequal[0]))
-                print("{:30s} {:30f}".format("p-value", ttest_ab_unequal[1]))
+                print(f"{'t-statistic':30s} {ttest_ab_unequal[0]:30f}"); print(f"{'p-value':30s} {ttest_ab_unequal[1]:30f}")
+
         else:
-            print("\nAt least one distribution is not normal")
-            print("\nMann - Whitney U test/ Wilcoxon rank-sum test")
+            print("\nAt least one distribution is not normal\nMann - Whitney U test/ Wilcoxon rank-sum test")
             mannwhitney = mannwhitneyu(seq_a, seq_b, alternative="two-sided")
-            print("{:30s} {:30f}".format("p-value", mannwhitney[1]))
+            print(f"{'p-value':30s} {mannwhitney[1]:30f}")
 
         print("\nKolmogorov Smirnov(a,b) test")
         kolmog = ks_2samp(seq_a, seq_b)  # Compute the Kolmogorov-Smirnov statistic on 2 samples.
-        print("{:30s} {:30f}".format("p-value", kolmog[1]))
+        print(f"{'p-value':30s} {kolmog[1]:30f}")
 
         # effect measures
         c = list(seq_a) + list(seq_b)
@@ -119,41 +119,39 @@ def test_all(sequences, alpha):
         ranksum_a = sum(a_ranked)
         ranksum_b = sum(b_ranked)
 
-        print("\nVarghas and Delaneys A Measure")
-        print("0.5=no, 0.56=small, 0.64=medium, 0.71=big effect")
+        print("\nVarghas and Delaneys A Measure\n0.5=no, 0.71=big effect")
         A = 1 / len(seq_b) * (ranksum_a / len(seq_a) - (len(seq_a) + 1) / 2)
-        if A < 0.5:
-            A = 1 - A
-        print("{:30s} {:30f}".format("A measure", A))
+        if A < 0.5: A = 1 - A
+        print(f"{'A measure':30s} {A:30f}")
 
-        print("\nCohens d measure")
-        print("0.25=small, 0.5=medium 0.75=large effect")
+        print("\nCohens d measure\n0.25=small, 0.5=medium, 0.75=large effect")
         s_pooled = math.sqrt((variance(seq_a) + variance(seq_b)) / 2)
         d = (mean(seq_a) - mean(seq_b)) / s_pooled
-        print("{:30s} {:30f}".format("d measure", d))
+        print(f"{'d measure':30s} {d:30f}")
 
         # Hedges g measure (p.344 lecture 2018)
-        hedges_g2 = (mean(seq_a) - mean(seq_b)) / (
-                    ((len(seq_a) - 1) * math.sqrt(variance(seq_a)) ** 2 + (len(seq_b) - 1) * math.sqrt(variance(seq_b)) ** 2) / ((len(seq_a) + len(seq_b) - 2))) ** 0.5
-        print("{:30s} {:31f}".format("\nhedges g", hedges_g2))
+        hedges_g2 = (mean(seq_a) - mean(seq_b)) / (((len(seq_a) - 1) * math.sqrt(variance(seq_a)) ** 2 + (len(seq_b) - 1) * math.sqrt(variance(seq_b)) ** 2) / ((len(seq_a) + len(seq_b) - 2))) ** 0.5
+        print(f"{'hedges g':30s} {hedges_g2:31f}")
+        
         hedges_g1 = d * (1 - (3 / (4 * (len(seq_a) + len(seq_b)) - 9)))
-        print("{:30s} {:30f}".format("hedges g (Korrekturfaktor)", hedges_g1))
+        print(f"{'hedges g (Korrekturfaktor)':30s} {hedges_g1:30f}")
 
         # Glass delta measure
         print("\nGlass delta measure")
+
         if len(seq_a) > len(seq_b):
             glass_delta = (mean(seq_b) - mean(seq_a)) / math.sqrt(variance(seq_a))
-            print("{:30s} {:30f}".format("\nGlass delta measure", glass_delta))
+            print(f"{'Glass delta measure':30s} {glass_delta:30f}")
 
         if len(seq_b) > len(seq_a):
             glass_delta = (mean(seq_a) - mean(seq_b)) / math.sqrt(variance(seq_b))
-            print("{:30s} {:30f}".format("\nGlass delta measure", glass_delta))
+            print(f"{'Glass delta measure':30s} {glass_delta:30f}")
 
         if len(seq_a) == len(seq_b):
             glass_delta1 = (mean(seq_a) - mean(seq_b)) / math.sqrt(variance(seq_b))
             glass_delta2 = (mean(seq_b) - mean(seq_a)) / math.sqrt(variance(seq_a))
-            print("{:30s} {:30f}".format("Calculate with Std.Dev(a)", glass_delta2))
-            print("{:30s} {:30f}".format("Calculate with Std.Dev(b)", glass_delta1))
+            print(f"{'Calculate with Std.Dev(a)':30s} {glass_delta2:30f}")
+            print(f"{'Calculate with Std.Dev(b)':30s} {glass_delta1:30f}")
 
 
 test_all(sequences, alpha)
